@@ -19,8 +19,8 @@
 
 		//Define map projection
 		var projection = d3.geoOrthographic()
-			.translate([w / 2, h / 2])
-			.scale([500]);
+			.translate([(w / 2)-200, h / 2])
+			.scale([600]);
 
 		//Define path generator
 		var path = d3.geoPath()
@@ -84,8 +84,8 @@
 				.enter()
 				.append("path")
 				.attr("d", path)
-				.style("fill", "white")
-				.style("stroke", "grey");
+				.style("fill", "grey")
+				.style("stroke", "white");
 
 			d3.csv("africadata.csv", function(data) {
 
@@ -104,7 +104,7 @@
 					.attr("r", function(d) {
 						return Math.sqrt(parseInt(d.population[1950])* 0.0008);
 					})
-					.style("fill", "gray")
+					.style("fill", "orange")
 					.style("opacity", 0.75)
 					.append("title") //Simple tooltip
 					.text(function(d) {
