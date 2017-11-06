@@ -6,12 +6,58 @@
 	<title>African Cities</title>
 	<script type="text/javascript" src="d3.js"></script>
 	<style type="text/css">
-		/* No style rules here yet */
+		svg {
+			margin-left: auto;
+			margin-right: auto;
+			display: block;
+		}
+		
+		h1 {
+			text-align: center;
+			font-family: Verdana, Geneva, sans-serif
+		}
+		
+		input[type=range] {
+			width: calc(100% - 100px);
+			display: inline-block;
+			margin-left: auto;
+			margin-right: auto;
+			vertical-align: middle;
+		}
+		
+		header {
+			width: 500px;
+			margin: auto;
+			text-align: center;
+		}
+		
 
 	</style>
 </head>
 
 <body>
+	<header>	
+	<h1 for="yearSlider">
+		Year = <span id="yearSlider-value">1950&nbsp;&nbsp;</span>
+	</h1>
+	<form>
+		<label>1950</label>
+		<input type="range" min="1950" max="2030" step="5" value="1950" id="yearSlider" list="ticks">
+		<datalist id="ticks">
+  			<option value="1950" label="1950">
+			<option value="1960" label="1960">
+			<option value="1970" label="1970">
+			<option value="1980" label="1980">
+			<option value="1990" label="1990">
+			<option value="2000" label="2000">
+			<option value="2010" label="2010">
+			<option value="2020" label="2020">
+			<option value="2030" label="2030">
+		</datalist>
+		<label>&nbsp;&nbsp;2030</label>
+	</form>
+	</header>
+	
 	<script type="text/javascript">
 		//Width and height
 		var w = 800;
@@ -19,7 +65,7 @@
 
 		//Define map projection
 		var projection = d3.geoOrthographic()
-			.translate([(w / 2)-200, h / 2])
+			.translate([(w / 2) - 150, h / 2])
 			.scale([600]);
 
 		//Define path generator
@@ -28,9 +74,9 @@
 
 		//For converting Dates to strings
 		var formatYear = d3.timeFormat("%Y");
-		
+
 		//Number formatting for population values
-		var formatAsThousands = d3.format(",");  //e.g. converts 123456 to "123,456"
+		var formatAsThousands = d3.format(","); //e.g. converts 123456 to "123,456"
 
 		//Create SVG element
 		var svg = d3.select("body")
@@ -102,7 +148,7 @@
 						return projection([d.lon, d.lat])[1];
 					})
 					.attr("r", function(d) {
-						return Math.sqrt(parseInt(d.population[1950])* 0.0008);
+						return Math.sqrt(parseInt(d.population[1950]) * 0.0004);
 					})
 					.style("fill", "orange")
 					.style("opacity", 0.75)
@@ -110,6 +156,32 @@
 					.text(function(d) {
 						return d.city + ": Pop. " + formatAsThousands(d.population[1950]);
 					});
+
+				// Change the year
+				d3.select("#yearSlider")
+					.on("input", function() {
+						// Do something
+						update(+this.value);
+					});
+
+				// update the elements
+				function update(yearSlider) {
+
+					// adjust the text on the range slider
+					d3.select("#yearSlider-value").text(yearSlider);
+					d3.select("#yearSlider").property("value", yearSlider);
+
+					// update the circle radius
+					svg.selectAll("circle")
+						.transition()
+						.attr("r", function(d) {
+							return Math.sqrt(parseInt(d.population[yearSlider]) * 0.0004);
+						})
+				}
+
+				// Initial starting radius of the circle 
+				update(1950);
+
 
 			});
 		});
