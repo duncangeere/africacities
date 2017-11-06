@@ -177,6 +177,10 @@
 						.attr("r", function(d) {
 							return Math.sqrt(parseInt(d.population[yearSlider]) * 0.0004);
 						})
+						.select("title")
+						.text(function(d) {
+							return d.city + ": Pop. " + formatAsThousands(d.population[yearSlider]);
+						});
 				}
 
 				// Initial starting radius of the circle 
